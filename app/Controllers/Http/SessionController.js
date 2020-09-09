@@ -1,6 +1,5 @@
 'use strict'
 const User = use("App/Models/User")
-const Admin = use("App/Models/Admin")
 
 class SessionController {
   async create({ request, auth }) {

@@ -12,6 +12,7 @@ class ClinicSchema extends Schema {
         .unsigned()
         .references('id')
         .inTable('doctors')
+      table.string('name').nullable()
       table.string('celphone', 15).nullable()
       table.string('zip_code').nullable()
       table.string('house_number').nullable()

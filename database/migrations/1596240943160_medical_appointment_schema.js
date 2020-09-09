@@ -22,7 +22,7 @@ class MedicalAppointmentSchema extends Schema {
         .unsigned()
         .references('id')
         .inTable('users')
-      table.date('date').notNullable()
+      table.datetime('consultation_schedule').notNullable()
       table.string('reason').nullable()
       table.integer('status').defaultTo(0)
       table.timestamps()
