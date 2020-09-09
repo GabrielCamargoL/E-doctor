@@ -10,7 +10,23 @@ class UserController {
   
   // POST --------------------------------------------------------
     async store({ request }) {
-      const data = request.all()
+      const { ...data } = request.only([
+        'username',
+        'surname',
+        'email',
+        'password',
+        'cpf',
+        'genre',
+        'birthday',
+        'phone',
+        'zip_code',
+        'house_number',
+        'complement_address',
+        'state',
+        'city',
+        'neighborhood',
+        'street',
+      ])
   
       const user = await User.create(data)
   
@@ -35,26 +51,25 @@ class UserController {
 
 
 // PUT --------------------------------------------------------
-  async update({ request }) {
+  async update({ request, params }) {
     const user = await User.findOrFail(params.id)
 
-    const { wish_list, ...data } = request.only([
-      "username",
-      "surname",
-      "email",
-      "cpf",
-      "genre",
-      "birthday",
-      "celphone",
-      "zip_code",
-      "state",
-      "city",
-      "neighborhood",
-      "public_neighborhood",
-      "house_number",
-      "street",
-      "complement_address",
-      "user_updated",
+    const { ...data } = request.only([
+      'username',
+      'surname',
+      'email',
+      'password',
+      'cpf',
+      'genre',
+      'birthday',
+      'phone',
+      'zip_code',
+      'house_number',
+      'complement_address',
+      'state',
+      'city',
+      'neighborhood',
+      'street',
     ])
 
 

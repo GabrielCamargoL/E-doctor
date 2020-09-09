@@ -49,4 +49,4 @@ class UpdateProfile {
   }
 }
 
-module.exports = Update
+module.exports = UpdateProfile

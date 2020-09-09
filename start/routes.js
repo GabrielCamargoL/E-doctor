@@ -17,7 +17,6 @@ Route.post('/users', 'UserController.store')
 
 Route.put('/users/:id', 'UserController.update')
   .middleware('auth')
-  .validator('Update')
 
 Route.put('/passwords/:id', 'UserController.updatePassword')
   .middleware('auth')
