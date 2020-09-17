@@ -7,7 +7,7 @@ const Hash = use('Hash')
 const Drive = use('Drive');
 
 class UserController {
-  
+
   // POST --------------------------------------------------------
     async store({ request }) {
       const { ...data } = request.only([
@@ -27,9 +27,9 @@ class UserController {
         'neighborhood',
         'street',
       ])
-  
+
       const user = await User.create(data)
-  
+
       return user
     }
 
@@ -45,7 +45,7 @@ class UserController {
 
   async show({ params }) {
     const user = await User.findOrFail(params.id)
-    
+
     return user
   }
 
