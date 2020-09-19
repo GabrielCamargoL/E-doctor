@@ -7,7 +7,7 @@ class Register {
       username: 'required|min:2|max:35',
       surname: 'required|min:2|max:35',
       email: 'required|email|unique:users,email',
-      password: 'required|min:8|max:40|confirmed'
+      password: 'required|min:8|max:40'
     }
   }
 
