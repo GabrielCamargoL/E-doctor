@@ -21,7 +21,8 @@ const Route = use('Route')
 
 //Importa as Rotass
 require('./patientAuth')
-require('./medicalAuth')
+require('./doctorAuth')
+require('./clinicAuth')
 require('./evaluation')
 require('./notify')
 require('./patientAuth')
