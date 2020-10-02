@@ -10,28 +10,22 @@ const Drive = use('Drive');
 class UserController {
 
   // POST --------------------------------------------------------
-    async store({ request }) {
-      const { ...data } = request.only([
-        'username',
-        'surname',
-        'email',
-        'password',
-        'cpf',
-        'genre',
-        'birthday',
-        'phone',
-        'zip_code',
-        'house_number',
-        'complement_address',
-        'state',
-        'city',
-        'neighborhood',
-        'street',
-      ])
+    async signUp({ request, response, auth }) {
+      const trx = await Database.beginTransaction()
+      try {
+        const { email, password, ...data } = request.all()
+        const user = await User.create({ email, password }, trx)
+        await user.patient().create(data, trx)
 
-      const user = await User.create(data)
+        await trx.commit()
+        const token = await auth.withRefreshToken().attempt(email, password)
 
-      return user
+        return response.status(200).send(token)
+      } catch (error) {
+        console.log(error);
+        await trx.rollback()
+        return response.status(error.status).send(error)
+      }
     }
 
     // GET --------------------------------------------------------

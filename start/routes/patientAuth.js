@@ -8,9 +8,9 @@ Route.group(() => {
 
   Route.get('/users/:id', 'UserController.show')
 
-  Route.post('signUp', 'UserController.store')
+  Route.post('signUp', 'UserController.signUp').middleware(['guest'])
     //.validator('Register')
-  Route.post('signIn', 'PatientAuth.signIn')
+  Route.post('signIn', 'PatientAuth.signIn').middleware(['guest'])
 
   Route.put('/users/:id', 'UserController.update')
   .middleware('auth')
