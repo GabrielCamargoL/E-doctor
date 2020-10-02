@@ -9,7 +9,9 @@ Route.group(() => {
   Route.get('/users/:id', 'UserController.show')
 
   Route.post('/users', 'UserController.store')
-    .validator('Register')
+  Route.post('/signIn', 'PatientAuth.signIn')
+
+    //.validator('Register')
 
   Route.put('/users/:id', 'UserController.update')
   .middleware('auth')
@@ -17,5 +19,5 @@ Route.group(() => {
   Route.delete('/users/:id', 'UserController.destroy')
   .middleware('auth')
 })
-  .prefix('v1/patientAuth')
+  .prefix('patientAuth')
   .namespace('PatientAuth')

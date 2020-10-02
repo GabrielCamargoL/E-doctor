@@ -4,11 +4,17 @@ const Doctor = use("App/Models/Doctor")
 const Database = use('Database')
 
 class DoctorController {
-  async signIn({ request, auth }) {
-    const { email, password } = request.all()
-    const token = await auth.attempt(email, password)
-    const doctor = await Doctor.findByOrFail('email', email)
-    return { token, doctor }
+  async signIn({ request, response, auth }) {
+    try {
+      const { email, password } = request.all()
+
+      const token = await auth.authenticator('doctor').attempt(email, password)
+
+      return response.status(200).send(token)
+    }
+    catch (error) {
+      console.log(error);
+    }
   }
 
   async signUp({ request, response, auth }) {
