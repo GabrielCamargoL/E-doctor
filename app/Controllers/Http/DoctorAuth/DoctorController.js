@@ -1,24 +1,38 @@
 'use strict'
 
+//const Role = use('Role')
 const Doctor = use("App/Models/Doctor")
+const User = use("App/Models/User")
 const Database = use('Database')
 
 class DoctorController {
-  async signIn({ request, auth }) {
-    const { email, password } = request.all()
-    const token = await auth.attempt(email, password)
-    const doctor = await Doctor.findByOrFail('email', email)
-    return { token, doctor }
+  async signIn({ request, response, auth }) {
+    try {
+      const { email, password } = request.all()
+
+      const token = await auth.attempt(email, password)
+
+      return response.status(200).send(token)
+    } catch (error) {
+      console.log(error);
+      return response.status(error.status).send({
+        message: 'E-mail ou Senha incorretos'
+      })
+    }
   }
 
   async signUp({ request, response, auth }) {
     const trx = await Database.beginTransaction()
     try {
       const { email, password, ...data } = request.all()
-      const user = await Doctor.create({ email, password, ...data }, trx)
+      const user = await User.create({ email, password }, trx)
+      await user.doctor().create(data, trx)
       await trx.commit()
-      return response.status(200).send(user)
+      const token = await auth.withRefreshToken().attempt(email, password)
+
+      return response.status(200).send(token)
     } catch (error) {
+      console.log(error);
       await trx.rollback()
       return response.status(error.status).send(error)
     }
