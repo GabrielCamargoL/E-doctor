@@ -15,7 +15,7 @@ class DoctorController {
       return response.status(200).send(token)
     }
     catch (error) {
-      console.log(error);
+      console.log(`Deu erro ${error}`);
     }
   }
 
