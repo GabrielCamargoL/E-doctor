@@ -73,8 +73,22 @@ module.exports = {
     password: 'password',
     options: {
       secret: Env.get('APP_KEY'),
+<<<<<<< HEAD
       expiresIn: '10d'
     }
+=======
+    },
+  },
+  doctor: {
+    serializer: 'lucid',
+    model: 'App/Models/Doctor',
+    scheme: 'jwt',
+    uid: 'email',
+    password: 'password',
+    options: {
+      secret: Env.get('APP_KEY'),
+    },
+>>>>>>> f33fe6c04e894f6d77675a1484afc208652f5364
   },
 
   /*
