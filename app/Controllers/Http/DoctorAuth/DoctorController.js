@@ -21,9 +21,9 @@ class DoctorController {
     const trx = await Database.beginTransaction()
     try {
       const { email, password, ...data } = request.all()
-      const user = await Doctor.create({ email, password, ...data }, trx)
+      const doctor = await Doctor.create({ email, password, ...data }, trx)
       await trx.commit()
-      return response.status(200).send(user)
+      return response.status(200).send(doctor)
     } catch (error) {
       await trx.rollback()
       return response.status(error.status).send(error)

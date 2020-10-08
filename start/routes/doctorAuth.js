@@ -9,7 +9,7 @@ Route.group(() => {
   Route.put('update/:id', 'DoctorController.update')
   Route.get('getUser/:id', 'DoctorController.getUser')
   Route.delete('delete/:id', 'DoctorController.destroy')
-  Route.post('uploadPhoto', 'ImageController.uploadPhoto')
+  Route.post('uploadPhoto/:id', 'ImageController.uploadProfilePhoto')
 })
   .prefix('doctorAuth')
   .namespace('DoctorAuth')
