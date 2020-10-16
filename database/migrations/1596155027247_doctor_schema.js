@@ -7,9 +7,10 @@ class DoctorSchema extends Schema {
   up () {
     this.create('doctors', (table) => {
       table.increments()
-      table.integer('user_id').unsigned().references('id').inTable('users')
       table.string('username', 80).notNullable()
       table.string('surname', 80).notNullable()
+      table.string('email', 254).notNullable().unique()
+      table.string('password', 60).notNullable()
       table.string('cpf', 14).nullable().unique()
       table.string('crm', 14).nullable()
       table.string('genre').nullable()

@@ -1,8 +1,6 @@
 'use strict'
 
-//const Role = use('Role')
 const Doctor = use("App/Models/Doctor")
-const User = use("App/Models/User")
 const Database = use('Database')
 
 class DoctorController {
@@ -23,14 +21,10 @@ class DoctorController {
     const trx = await Database.beginTransaction()
     try {
       const { email, password, ...data } = request.all()
-      const user = await User.create({ email, password }, trx)
-      await user.doctor().create(data, trx)
+      const doctor = await Doctor.create({ email, password, ...data }, trx)
       await trx.commit()
-      const token = await auth.withRefreshToken().attempt(email, password)
-
-      return response.status(200).send(token)
+      return response.status(200).send(doctor)
     } catch (error) {
-      console.log(error);
       await trx.rollback()
       return response.status(error.status).send(error)
     }
