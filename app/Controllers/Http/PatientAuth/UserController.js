@@ -14,8 +14,7 @@ class UserController {
       const trx = await Database.beginTransaction()
       try {
         const { email, password, ...data } = request.all()
-        const user = await User.create({ email, password }, trx)
-        await user.patient().create(data, trx)
+        const user = await User.create({ email, password, ...data }, trx)
 
         await trx.commit()
         const token = await auth.withRefreshToken().attempt(email, password)

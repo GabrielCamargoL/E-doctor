@@ -8,7 +8,7 @@ Route.group(() => {
 
   Route.get('/users/:id', 'UserController.show')
 
-  Route.post('/users', 'UserController.store')
+  Route.post('/users', 'UserController.signUp')
   Route.post('/signIn', 'PatientAuth.signIn')
 
     //.validator('Register')
