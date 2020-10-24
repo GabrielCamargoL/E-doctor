@@ -6,14 +6,14 @@ const Drive = use('Drive');
 
 class ImageController {
   async uploadProfilePhoto({ request, params }) {
+    console.log('0')
     try {
       const doctor = await Doctor.findOrFail(params.id)
-      console.log('antes 1')
       const validationOptions = {
         types: ['jpeg', 'jpg', 'png'],
         size: '20mb'
       }
-      console.log('antes 2')
+      console.log('1.5')
 
       await request.multipart.file('image', validationOptions, async file => {
         // set file size from stream byteCount, so adonis can validate file size

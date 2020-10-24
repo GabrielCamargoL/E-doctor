@@ -28,6 +28,7 @@ class DoctorSchema extends Schema {
       table.string('specialty').nullable()
       table.string('score').nullable()
       table.string('number_of_evaluation').nullable()
+      table.string('about')
       table.integer('status').defaultTo(1)
       table.timestamps()
     })

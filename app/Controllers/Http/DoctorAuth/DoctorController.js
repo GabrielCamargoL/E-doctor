@@ -7,12 +7,14 @@ class DoctorController {
   async signIn({ request, response, auth }) {
     try {
       const { email, password } = request.all()
-
+      
+      const doctor = await Doctor.findByOrFail('email', email)
+      
       const token = await auth.authenticator('doctor').attempt(email, password)
 
-      return response.status(200).send(token)
-    }
-    catch (error) {
+      return {token, doctor}
+    
+    } catch (error) {
       console.log(`Deu erro ${error}`);
     }
   }

@@ -21,12 +21,6 @@ class User extends Model {
   doctor() {
     return this.hasOne('App/Models/Doctor')
   }
-
-  patient() {
-    return this.hasOne('App/Models/Patient')
-  }
-
-
 }
 
 module.exports = User

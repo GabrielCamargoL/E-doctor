@@ -27,6 +27,7 @@ require('./evaluation')
 require('./notify')
 require('./patientAuth')
 require('./recoverPassword')
+require('./medicalAppointment')
 
 
 

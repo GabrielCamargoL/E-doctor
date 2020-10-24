@@ -24,7 +24,9 @@ class MedicalAppointmentSchema extends Schema {
         .inTable('users')
       table.datetime('consultation_schedule').notNullable()
       table.string('reason').nullable()
-      table.integer('status').defaultTo(0)
+      table
+        .enu('status', ['Rejected', 'Pending', 'Accepted', 'Done', 'Canceled'])
+        .defaultTo('Pending')
       table.timestamps()
     })
   }
