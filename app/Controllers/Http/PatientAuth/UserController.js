@@ -1,7 +1,6 @@
 'use strict'
 
 const User = use("App/Models/User")
-const Patient = use("App/Models/Patient")
 const Database = use('Database')
 const Helpers = use('Helpers')
 const Hash = use('Hash')

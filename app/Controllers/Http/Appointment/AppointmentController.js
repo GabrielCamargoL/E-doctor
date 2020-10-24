@@ -9,7 +9,7 @@ class AppointmentController {
       .query()
       .where('consultation_schedule', '>', Date.now())
       .andWhere('doctor_id', params.doctor_id)
-      .andWhere('status', 1)
+      .andWhere('status', 'Accepted')
       .with('user')
       .with('doctor')
       .fetch()
@@ -22,7 +22,7 @@ class AppointmentController {
       .query()
       .where('consultation_schedule', '>', Date.now())
       .andWhere('doctor_id', params.doctor_id)
-      .andWhere('status', 0)
+      .andWhere('status', 'Pending')
       .with('user')
       .fetch()
 
