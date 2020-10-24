@@ -11,6 +11,7 @@ class AppointmentController {
       .andWhere('doctor_id', params.doctor_id)
       .andWhere('status', 1)
       .with('user')
+      .with('doctor')
       .fetch()
 
     return appointments
@@ -38,6 +39,23 @@ class AppointmentController {
       user_id,
       consultation_schedule,
     });
+
+    return appointments
+  }
+
+  async acceptAppointment({ request, response, params }) {
+    
+    const {clinic_id, doctor_id, user_id, consultation_schedule} = request.all()
+
+    const appointment = MedicalAppointment
+    .query()
+    .where('id', id)
+    .update({ status: 'accepted' })
+    
+    appointment.merge({ status: 1 })
+
+    await appointment.save()
+
 
     return appointments
   }
