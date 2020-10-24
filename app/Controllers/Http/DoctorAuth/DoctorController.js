@@ -39,6 +39,18 @@ class DoctorController {
     }
   }
 
+  async index({ response }) {
+    try {
+      const doctors = await Doctor.query()
+        .with('clinic')
+        .fetch()
+      return response.status(200).send(doctors)
+    } catch (error) {
+      console.log(error);
+      return response.status(error.status).send(error)
+    }
+  }
+
   async update({ request, params, response }) {
     const trx = await Database.beginTransaction()
     try {

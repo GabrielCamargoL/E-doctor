@@ -38,10 +38,20 @@ class UserController {
     return users, user
   }
 
-  async show({ params }) {
-    const user = await User.findOrFail(params.id)
+  async getUser({ response, auth }) {
+    try {
+      const user = await auth.getUser()
 
-    return user
+      const patient = await User.query()
+        .where('id', user.id)
+        .first()
+
+      const data = Object.assign(patient, { email: user.email })
+
+      return response.status(200).send(data)
+    } catch (error) {
+      return response.status(error.status).send(error)
+    }
   }
 
 

@@ -6,7 +6,7 @@ const Route = use('Route')
 Route.group(() => {
   Route.get('/users', 'UserController.index').middleware('auth')
 
-  Route.get('/users/:id', 'UserController.show')
+  Route.get('/getUser', 'UserController.getUser').middleware('auth')
 
   Route.post('/users', 'UserController.store')
   Route.post('/signIn', 'PatientAuth.signIn')
