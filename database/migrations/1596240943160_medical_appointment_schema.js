@@ -27,6 +27,8 @@ class MedicalAppointmentSchema extends Schema {
       table
         .enu('status', ['Rejected', 'Pending', 'Accepted', 'Done', 'Canceled'])
         .defaultTo('Pending')
+      table.string('exam_path').nullable()
+      table.string('prescription').nullable()
       table.timestamps()
     })
   }

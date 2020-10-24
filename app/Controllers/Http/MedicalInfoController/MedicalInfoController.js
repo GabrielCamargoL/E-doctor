@@ -1,12 +1,6 @@
 'use strict'
 
-/** @typedef {import('@adonisjs/framework/src/Request')} Request */
-/** @typedef {import('@adonisjs/framework/src/Response')} Response */
-/** @typedef {import('@adonisjs/framework/src/View')} View */
-
-/**
- * Resourceful controller for interacting with medicalinfos
- */
+const MedicalInfo = use('App/Models/MedicalInfo')
 class MedicalInfoController {
   /**
    * Show a list of all medicalinfos.
@@ -17,19 +11,30 @@ class MedicalInfoController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index ({ request, response, view }) {
+  async index ({ request, response }) {
   }
 
-  /**
-   * Render a form to be used for creating a new medicalinfo.
-   * GET medicalinfos/create
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async create ({ request, response, view }) {
+  async create ({ request, response, params }) {
+    const {
+      weight,
+      height,
+      blood_type,
+      health_problems,
+      allergy,
+      personal_medicine,
+    } = request.all()
+
+    const medicalinfo = await MedicalInfo.create({
+      user_id: params.pacient_id,
+      weight,
+      height,
+      blood_type,
+      health_problems,
+      allergy,
+      personal_medicine
+    })
+
+    return medicalinfo
   }
 
   /**
