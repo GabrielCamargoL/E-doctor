@@ -18,6 +18,11 @@ Route.group(() => {
 
   Route.delete('/users/:id', 'UserController.destroy')
   .middleware('auth')
+
+  Route.post('doubt/create', 'DoubtController.create').middleware(['auth'])
+  Route.get('doubt/show/:id', 'DoubtController.getDoubt').middleware(['auth'])
+  Route.get('doubt/index', 'DoubtController.index').middleware(['auth'])
+
 })
   .prefix('patientAuth')
   .namespace('PatientAuth')
