@@ -18,6 +18,7 @@ class DoubtSchema extends Schema {
         .references('id')
         .inTable('users')
       table.string('doubt')
+      table.string('answer')
       table.timestamps()
     })
   }
