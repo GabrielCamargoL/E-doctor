@@ -18,6 +18,17 @@ class ClinicController {
     }
   }
 
+  async index({ response }) {
+    try {
+      const clinic = await Clinic.all()
+
+      return response.status(200).send(clinic)
+    } catch (error) {
+      console.log(error);
+      return response.status(error.status).send(error)
+    }
+  }
+
   async getClinic({ response, params }) {
     try {
       const clinic = await Clinic.query()

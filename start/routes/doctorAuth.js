@@ -8,6 +8,7 @@ Route.group(() => {
   Route.post('signIn', 'DoctorController.signIn').middleware('guest')
   Route.put('update/:id', 'DoctorController.update')
   Route.get('getUser/:id', 'DoctorController.getUser')
+  Route.get('index', 'DoctorController.index')
   Route.delete('delete/:id', 'DoctorController.destroy')
   Route.post('uploadPhoto/:id', 'ImageController.uploadProfilePhoto')
 })
