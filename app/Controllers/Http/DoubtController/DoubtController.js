@@ -25,6 +25,7 @@ class DoubtController {
       const user = await auth.getUser()
       const doubt = await Doubt.query()
         .where('user_id', user.id)
+        .with('user')
         .with('doctor')
         .fetch()
 
@@ -40,6 +41,7 @@ class DoubtController {
       const doubt = await Doubt.query()
         .where('id', '=', params.id)
         .with('doctor')
+        .with('user')
         .first()
       return response.status(200).send(doubt)
     } catch (error) {

@@ -7,6 +7,9 @@ class Doubt extends Model {
   doctor () {
     return this.belongsTo('App/Models/Doctor')
   }
+  user () {
+    return this.belongsTo('App/Models/User')
+  }
 }
 
 module.exports = Doubt
