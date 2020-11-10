@@ -46,17 +46,20 @@ class AppointmentController {
   }
 
   async create({ request }) {
+    try {
+      const { clinic_id, doctor_id, user_id, consultation_schedule } = request.all()
 
-    const { clinic_id, doctor_id, user_id, consultation_schedule } = request.all()
+      const appointments = await MedicalAppointment.create({
+        clinic_id,
+        doctor_id,
+        user_id,
+        consultation_schedule,
+      });
 
-    const appointments = await MedicalAppointment.create({
-      clinic_id,
-      doctor_id,
-      user_id,
-      consultation_schedule,
-    });
-
-    return appointments
+      return appointments
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async acceptAppointment({ request, params }) {
@@ -128,7 +131,7 @@ class AppointmentController {
         .query()
         .where('id', params.appointment_id)
         .update({ status: 'Done' })
-  
+
       // * * * * * * * * * * * * * * * * * * * * * * * *
       //
       //  Enviar arquivo de exame PDF para o S3

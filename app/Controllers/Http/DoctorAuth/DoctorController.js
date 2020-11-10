@@ -44,9 +44,13 @@ class DoctorController {
 
   async getUser({ response, params }) {
     try {
-      const doctor = await Doctor.findOrFail(params.id)
+      const doctor = await Doctor.query()
+        .where('id', params.id)
+        .with('clinic')
+        .first()
       return response.status(200).send(doctor)
     } catch (error) {
+      console.log(error);
       return response.status(error.status).send(error)
     }
   }
