@@ -8,7 +8,7 @@ Route.group(() => {
 
   Route.get('/getUser', 'UserController.getUser').middleware('auth')
 
-  Route.post('/users', 'UserController.signUp')
+  Route.post('/signUp', 'UserController.signUp')
   Route.post('/signIn', 'PatientAuth.signIn')
 
     //.validator('Register')
@@ -19,9 +19,16 @@ Route.group(() => {
   Route.delete('/users/:id', 'UserController.destroy')
   .middleware('auth')
 
+  Route.post('uploadPhoto/:id', 'ImageController.uploadProfilePhoto')
+  Route.post('uploadSelfie/:id', 'ImageController.uploadSelfie')
+
   Route.post('doubt/create', 'DoubtController.create').middleware(['auth'])
   Route.get('doubt/show/:id', 'DoubtController.getDoubt').middleware(['auth'])
   Route.get('doubt/index', 'DoubtController.index').middleware(['auth'])
+
+  Route.get('confirmedAppointments', 'AppointmentController.confirmedAppointments').middleware(['auth'])
+  Route.get('pendingAppointments', 'AppointmentController.pendingAppointments').middleware(['auth'])
+  Route.put('cancel/:appointment_id', 'AppointmentController.cancelAppointment').middleware(['auth'])
 
 })
   .prefix('patientAuth')
