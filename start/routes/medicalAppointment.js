@@ -4,7 +4,7 @@
 const Route = use('Route')
 
 Route.group(() => {
-  Route.post('create', 'AppointmentController.create').middleware(['guest'])
+  Route.post('create', 'AppointmentController.create')
 
   Route.get('confirmedAppointments/:doctor_id', 'AppointmentController.confirmedAppointments')
   Route.get('pendingAppointments/:doctor_id', 'AppointmentController.pendingAppointments')
