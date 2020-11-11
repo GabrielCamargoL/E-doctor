@@ -20,26 +20,27 @@ class AppointmentController {
     return appointment
   }
 
-  async confirmedAppointments({ request, response, params }) {
+  async confirmedAppointments({ request, response, auth }) {
+    const user = await auth.getUser()
     const appointments = await MedicalAppointment
       .query()
       .where('consultation_schedule', '>', Date.now())
-      .andWhere('doctor_id', params.doctor_id)
+      .andWhere('user_id', user.id)
       .andWhere('status', 'Accepted')
-      .with('user')
       .with('doctor')
       .fetch()
 
     return appointments
   }
 
-  async pendingAppointments({ request, response, params }) {
+  async pendingAppointments({ request, response, auth }) {
+    const user = await auth.getUser()
     const appointments = await MedicalAppointment
       .query()
       .where('consultation_schedule', '>', Date.now())
-      .andWhere('doctor_id', params.doctor_id)
+      .andWhere('user_id', user.id)
       .andWhere('status', 'Pending')
-      .with('user')
+      .with('doctor')
       .fetch()
 
     return appointments
@@ -59,47 +60,6 @@ class AppointmentController {
       return appointments
     } catch (error) {
       console.log(error);
-    }
-  }
-
-  async acceptAppointment({ request, params }) {
-    try {
-    const appointment = MedicalAppointment
-      .query()
-      .where('id', params.appointment_id)
-      .update({ status: 'Accepted' })
-
-    // * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-    //
-    //  Notificar o usuário que o médico Aceitou a consulta
-    //
-    // * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
-    return appointment
-
-    } catch(err) {
-      console.log('Done: ' + err)
-    }
-  }
-
-  async rejectAppointment({ request, params }) {
-    console.log(params.appointment_id)
-    try {
-      const appointment = MedicalAppointment
-        .query()
-        .where('id', params.appointment_id)
-        .update({ status: 'Rejected' })
-
-      // * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-      //
-      //  Notificar o usuário que o médico Rejeitou a consulta
-      //
-      // * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
-      return appointment
-
-    } catch (err) {
-      console.log('Reject: ' + err)
     }
   }
 

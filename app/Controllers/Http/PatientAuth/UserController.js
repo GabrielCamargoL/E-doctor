@@ -36,6 +36,7 @@ class UserController {
     return users, user
   }
 
+
   async getUser({ response, auth }) {
     try {
       const user = await auth.getUser()
@@ -50,14 +51,14 @@ class UserController {
     } catch (error) {
       return response.status(error.status).send(error)
     }
-  }
+
 
 
 // PUT --------------------------------------------------------
   async update({ request, params }) {
     const user = await User.findOrFail(params.id)
 
-    const { ...data } = request.only([
+    const data = request.only([
       'username',
       'surname',
       'email',

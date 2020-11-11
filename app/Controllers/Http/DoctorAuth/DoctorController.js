@@ -4,16 +4,26 @@ const Doctor = use("App/Models/Doctor")
 const Database = use('Database')
 
 class DoctorController {
+  async index({}){
+    try {
+      const doctors = await Doctor.all()
+
+      return doctors
+    }catch (error) {
+      console.log(error);
+    }
+  }
+
   async signIn({ request, response, auth }) {
     try {
       const { email, password } = request.all()
-      
+
       const doctor = await Doctor.findByOrFail('email', email)
-      
+
       const token = await auth.authenticator('doctor').attempt(email, password)
 
       return {token, doctor}
-    
+
     } catch (error) {
       console.log(`Deu erro ${error}`);
     }
@@ -34,9 +44,13 @@ class DoctorController {
 
   async getUser({ response, params }) {
     try {
-      const doctor = await Doctor.findOrFail(params.id)
+      const doctor = await Doctor.query()
+        .where('id', params.id)
+        .with('clinic')
+        .first()
       return response.status(200).send(doctor)
     } catch (error) {
+      console.log(error);
       return response.status(error.status).send(error)
     }
   }
