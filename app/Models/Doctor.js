@@ -20,6 +20,10 @@ class Doctor extends Model {
     return this.belongsTo('App/Models/User')
   }
 
+  clinic() {
+    return this.hasOne('App/Models/Clinic')
+  }
+
   doubt() {
     return this.belongsTo('App/Models/Doubt')
   }
