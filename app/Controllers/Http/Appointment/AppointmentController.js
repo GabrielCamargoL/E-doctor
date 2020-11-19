@@ -1,6 +1,7 @@
 'use strict'
 
 const MedicalAppointment = use("App/Models/MedicalAppointment")
+const Medicine = use("App/Models/Medicine")
 const User = use("App/Models/User")
 const Database = use('Database')
 
@@ -61,20 +62,20 @@ class AppointmentController {
 
   async acceptAppointment({ request, params }) {
     try {
-    const appointment = MedicalAppointment
-      .query()
-      .where('id', params.appointment_id)
-      .update({ status: 'Accepted' })
+      const appointment = MedicalAppointment
+        .query()
+        .where('id', params.appointment_id)
+        .update({ status: 'Accepted' })
 
-    // * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-    //
-    //  Notificar o usuário que o médico Aceitou a consulta
-    //
-    // * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+      // * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+      //
+      //  Notificar o usuário que o médico Aceitou a consulta
+      //
+      // * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-    return appointment
+      return appointment
 
-    } catch(err) {
+    } catch (err) {
       console.log('Done: ' + err)
     }
   }
@@ -124,22 +125,27 @@ class AppointmentController {
 
   async doneAppointment({ request, params }) {
     try {
-      const appointment = MedicalAppointment
+      const { medicines } = request.all()
+
+      const appointment = await MedicalAppointment
         .query()
         .where('id', params.appointment_id)
         .update({ status: 'Done' })
-  
-      // * * * * * * * * * * * * * * * * * * * * * * * *
-      //
-      //  Enviar arquivo de exame PDF para o S3
-      //
-      //  Preparar a string de receita Médica
-      //
-      // * * * * * * * * * * * * * * * * * * * * * * * *
+
+      medicines.map((item, index) => {
+        Medicine.create({
+          medical_appointment_id: params.appointment_id,
+          name: item.name,
+          period_type: item.period_type,
+          hours: item.period,
+          days:item.days
+        })
+        console.log(item)
+      })
 
       return appointment
 
-    } catch(err) {
+    } catch (err) {
       console.log('Done: ' + err)
     }
   }

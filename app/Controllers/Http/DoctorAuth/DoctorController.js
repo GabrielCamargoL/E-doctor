@@ -66,6 +66,26 @@ class DoctorController {
     }
   }
 
+  async updateAvailableHours({ request, params, response }) {
+    const trx = await Database.beginTransaction()
+    try {
+      const doctor = await Doctor.findOrFail(params.id)
+      const {available_hours} = request.all()
+
+      const available_hours_string = available_hours.join();
+
+      doctor.merge({ available_hours: available_hours_string })
+      
+      await doctor.save(trx)
+      await trx.commit()
+      return response.status(200).send(doctor)
+
+    } catch (error) {
+      await trx.rollback()
+      return response.status(error.status).send(error)
+    }
+  }
+
   async destroy({ response, params }) {
     try {
       const doctor = await Doctor.findOrFail(params.id)

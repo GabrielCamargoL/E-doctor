@@ -26,6 +26,7 @@ class DoctorSchema extends Schema {
       table.string('street').nullable()
       table.string('path_avatar').nullable()
       table.string('specialty').nullable()
+      table.string('available_hours').nullable()
       table.string('score').nullable()
       table.string('number_of_evaluation').nullable()
       table.string('about')
