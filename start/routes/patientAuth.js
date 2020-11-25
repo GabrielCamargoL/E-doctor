@@ -30,6 +30,8 @@ Route.group(() => {
   Route.get('pendingAppointments', 'AppointmentController.pendingAppointments').middleware(['auth'])
   Route.put('cancel/:appointment_id', 'AppointmentController.cancelAppointment').middleware(['auth'])
 
+  Route.post('evaluation', 'EvaluationController.store')
+
 })
   .prefix('patientAuth')
   .namespace('PatientAuth')
