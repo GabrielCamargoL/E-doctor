@@ -27,6 +27,7 @@
     "@adonisjs/lucid": "^6.2.0",
     "@adonisjs/mail": "^3.0.10",
     "@adonisjs/validator": "^5.0.6",
+    "@adonisjs/vow": "^1.0.17",
     "adonis-lucid-when": "^1.0.1",
     "aws-sdk": "^2.770.0",
     "moment": "^2.28.0",

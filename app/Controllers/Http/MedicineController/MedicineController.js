@@ -5,12 +5,12 @@
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
 /**
- * Resourceful controller for interacting with evaluations
+ * Resourceful controller for interacting with medicines
  */
-class EvaluationController {
+class MedicineController {
   /**
-   * Show a list of all evaluations.
-   * GET evaluations
+   * Show a list of all medicines.
+   * GET medicines
    *
    * @param {object} ctx
    * @param {Request} ctx.request
@@ -21,8 +21,8 @@ class EvaluationController {
   }
 
   /**
-   * Render a form to be used for creating a new evaluation.
-   * GET evaluations/create
+   * Render a form to be used for creating a new medicine.
+   * GET medicines/create
    *
    * @param {object} ctx
    * @param {Request} ctx.request
@@ -33,8 +33,8 @@ class EvaluationController {
   }
 
   /**
-   * Create/save a new evaluation.
-   * POST evaluations
+   * Create/save a new medicine.
+   * POST medicines
    *
    * @param {object} ctx
    * @param {Request} ctx.request
@@ -44,8 +44,8 @@ class EvaluationController {
   }
 
   /**
-   * Display a single evaluation.
-   * GET evaluations/:id
+   * Display a single medicine.
+   * GET medicines/:id
    *
    * @param {object} ctx
    * @param {Request} ctx.request
@@ -56,8 +56,8 @@ class EvaluationController {
   }
 
   /**
-   * Render a form to update an existing evaluation.
-   * GET evaluations/:id/edit
+   * Render a form to update an existing medicine.
+   * GET medicines/:id/edit
    *
    * @param {object} ctx
    * @param {Request} ctx.request
@@ -68,8 +68,8 @@ class EvaluationController {
   }
 
   /**
-   * Update evaluation details.
-   * PUT or PATCH evaluations/:id
+   * Update medicine details.
+   * PUT or PATCH medicines/:id
    *
    * @param {object} ctx
    * @param {Request} ctx.request
@@ -79,8 +79,8 @@ class EvaluationController {
   }
 
   /**
-   * Delete a evaluation with id.
-   * DELETE evaluations/:id
+   * Delete a medicine with id.
+   * DELETE medicines/:id
    *
    * @param {object} ctx
    * @param {Request} ctx.request
@@ -90,4 +90,4 @@ class EvaluationController {
   }
 }
 
-module.exports = EvaluationController
+module.exports = MedicineController

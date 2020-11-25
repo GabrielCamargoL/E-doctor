@@ -7,13 +7,13 @@ class DoctorController {
   async signIn({ request, response, auth }) {
     try {
       const { email, password } = request.all()
-      
+
       const doctor = await Doctor.findByOrFail('email', email)
-      
+
       const token = await auth.authenticator('doctor').attempt(email, password)
 
       return {token, doctor}
-    
+
     } catch (error) {
       console.log(`Deu erro ${error}`);
     }
@@ -34,9 +34,25 @@ class DoctorController {
 
   async getUser({ response, params }) {
     try {
-      const doctor = await Doctor.findOrFail(params.id)
+      const doctor = await Doctor.query()
+        .where('id', params.id)
+        .with('clinic')
+        .first()
       return response.status(200).send(doctor)
     } catch (error) {
+      console.log(error);
+      return response.status(error.status).send(error)
+    }
+  }
+
+  async index({ response }) {
+    try {
+      const doctors = await Doctor.query()
+        .with('clinic')
+        .fetch()
+      return response.status(200).send(doctors)
+    } catch (error) {
+      console.log(error);
       return response.status(error.status).send(error)
     }
   }
@@ -50,6 +66,26 @@ class DoctorController {
       await doctor.save(trx)
       await trx.commit()
       return response.status(200).send(doctor)
+    } catch (error) {
+      await trx.rollback()
+      return response.status(error.status).send(error)
+    }
+  }
+
+  async updateAvailableHours({ request, params, response }) {
+    const trx = await Database.beginTransaction()
+    try {
+      const doctor = await Doctor.findOrFail(params.id)
+      const {available_hours} = request.all()
+
+      const available_hours_string = available_hours.join();
+
+      doctor.merge({ available_hours: available_hours_string })
+      
+      await doctor.save(trx)
+      await trx.commit()
+      return response.status(200).send(doctor)
+
     } catch (error) {
       await trx.rollback()
       return response.status(error.status).send(error)

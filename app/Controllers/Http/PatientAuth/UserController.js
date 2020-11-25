@@ -36,10 +36,21 @@ class UserController {
     return users, user
   }
 
-  async show({ params }) {
-    const user = await User.findOrFail(params.id)
 
-    return user
+  async getUser({ response, auth }) {
+    try {
+      const user = await auth.getUser()
+
+      const patient = await User.query()
+        .where('id', user.id)
+        .first()
+
+      const data = Object.assign(patient, { email: user.email })
+
+      return response.status(200).send(data)
+    } catch (error) {
+      return response.status(error.status).send(error)
+    }
   }
 
 
@@ -47,7 +58,7 @@ class UserController {
   async update({ request, params }) {
     const user = await User.findOrFail(params.id)
 
-    const { ...data } = request.only([
+    const data = request.only([
       'username',
       'surname',
       'email',
