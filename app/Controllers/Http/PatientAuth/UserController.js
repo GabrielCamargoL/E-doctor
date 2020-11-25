@@ -51,7 +51,7 @@ class UserController {
     } catch (error) {
       return response.status(error.status).send(error)
     }
-
+  }
 
 
 // PUT --------------------------------------------------------
