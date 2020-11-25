@@ -1,7 +1,6 @@
 'use strict'
 
 const MedicalAppointment = use("App/Models/MedicalAppointment")
-const Medicine = use("App/Models/Medicine")
 const User = use("App/Models/User")
 const Database = use('Database')
 
@@ -21,26 +20,27 @@ class AppointmentController {
     return appointment
   }
 
-  async confirmedAppointments({ request, response, params }) {
+  async confirmedAppointments({ request, response, auth }) {
+    const user = await auth.getUser()
     const appointments = await MedicalAppointment
       .query()
       .where('consultation_schedule', '>', Date.now())
-      .andWhere('doctor_id', params.doctor_id)
+      .andWhere('user_id', user.id)
       .andWhere('status', 'Accepted')
-      .with('user')
       .with('doctor')
       .fetch()
 
     return appointments
   }
 
-  async pendingAppointments({ request, response, params }) {
+  async pendingAppointments({ request, response, auth }) {
+    const user = await auth.getUser()
     const appointments = await MedicalAppointment
       .query()
       .where('consultation_schedule', '>', Date.now())
-      .andWhere('doctor_id', params.doctor_id)
+      .andWhere('user_id', user.id)
       .andWhere('status', 'Pending')
-      .with('user')
+      .with('doctor')
       .fetch()
 
     return appointments
@@ -63,47 +63,6 @@ class AppointmentController {
     }
   }
 
-  async acceptAppointment({ request, params }) {
-    try {
-      const appointment = MedicalAppointment
-        .query()
-        .where('id', params.appointment_id)
-        .update({ status: 'Accepted' })
-
-      // * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-      //
-      //  Notificar o usuário que o médico Aceitou a consulta
-      //
-      // * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
-      return appointment
-
-    } catch (err) {
-      console.log('Done: ' + err)
-    }
-  }
-
-  async rejectAppointment({ request, params }) {
-    console.log(params.appointment_id)
-    try {
-      const appointment = MedicalAppointment
-        .query()
-        .where('id', params.appointment_id)
-        .update({ status: 'Rejected' })
-
-      // * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-      //
-      //  Notificar o usuário que o médico Rejeitou a consulta
-      //
-      // * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
-      return appointment
-
-    } catch (err) {
-      console.log('Reject: ' + err)
-    }
-  }
-
   async cancelAppointment({ request, params }) {
     try {
       const { reason } = request.all()
@@ -112,6 +71,12 @@ class AppointmentController {
         .query()
         .where('id', params.appointment_id)
         .update({ status: 'Canceled', reason: reason })
+
+      // * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+      //
+      //  Notificar o usuário que o médico cancelou a consulta
+      //
+      // * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
       return appointment
 
@@ -122,27 +87,22 @@ class AppointmentController {
 
   async doneAppointment({ request, params }) {
     try {
-      const { medicines } = request.all()
-
-      const appointment = await MedicalAppointment
+      const appointment = MedicalAppointment
         .query()
         .where('id', params.appointment_id)
         .update({ status: 'Done' })
 
-      medicines.map((item, index) => {
-        Medicine.create({
-          medical_appointment_id: params.appointment_id,
-          name: item.name,
-          period_type: item.period_type,
-          hours: item.period,
-          days:item.days
-        })
-        console.log(item)
-      })
+      // * * * * * * * * * * * * * * * * * * * * * * * *
+      //
+      //  Enviar arquivo de exame PDF para o S3
+      //
+      //  Preparar a string de receita Médica
+      //
+      // * * * * * * * * * * * * * * * * * * * * * * * *
 
       return appointment
 
-    } catch (err) {
+    } catch(err) {
       console.log('Done: ' + err)
     }
   }
