@@ -32,7 +32,6 @@ Route.group(() => {
 
   Route.post('evaluation', 'EvaluationController.store')
 
-
 })
   .prefix('patientAuth')
   .namespace('PatientAuth')

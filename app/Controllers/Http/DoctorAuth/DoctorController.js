@@ -4,16 +4,6 @@ const Doctor = use("App/Models/Doctor")
 const Database = use('Database')
 
 class DoctorController {
-  async index({}){
-    try {
-      const doctors = await Doctor.all()
-
-      return doctors
-    }catch (error) {
-      console.log(error);
-    }
-  }
-
   async signIn({ request, response, auth }) {
     try {
       const { email, password } = request.all()
@@ -49,6 +39,18 @@ class DoctorController {
         .with('clinic')
         .first()
       return response.status(200).send(doctor)
+    } catch (error) {
+      console.log(error);
+      return response.status(error.status).send(error)
+    }
+  }
+
+  async index({ response }) {
+    try {
+      const doctors = await Doctor.query()
+        .with('clinic')
+        .fetch()
+      return response.status(200).send(doctors)
     } catch (error) {
       console.log(error);
       return response.status(error.status).send(error)
