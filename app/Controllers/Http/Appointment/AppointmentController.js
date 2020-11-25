@@ -110,12 +110,6 @@ class AppointmentController {
         .where('id', params.appointment_id)
         .update({ status: 'Canceled', reason: reason })
 
-      // * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-      //
-      //  Notificar o usuário que o médico cancelou a consulta
-      //
-      // * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
       return appointment
 
     } catch (err) {
