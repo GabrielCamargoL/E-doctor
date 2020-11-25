@@ -19,7 +19,7 @@ Route.group(() => {
   Route.delete('/users/:id', 'UserController.destroy')
   .middleware('auth')
 
-  Route.post('uploadPhoto/:id', 'ImageController.uploadProfilePhoto')
+  Route.post('uploadPhoto', 'ImageController.uploadProfilePhoto').middleware(['auth'])
   Route.post('uploadSelfie/:id', 'ImageController.uploadSelfie')
 
   Route.post('doubt/create', 'DoubtController.create').middleware(['auth'])
