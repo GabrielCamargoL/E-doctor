@@ -5,27 +5,19 @@ const MedicalInfo = use('App/Models/MedicalInfo')
 
 class MedicalInfoController {
 
-  async create ({ request, response, params }) {
-    const {
-      weight,
-      height,
-      blood_type,
-      health_problems,
-      allergy,
-      personal_medicine,
-    } = request.all()
-
-    const medicalinfo = await MedicalInfo.create({
-      user_id: params.pacient_id,
-      weight,
-      height,
-      blood_type,
-      health_problems,
-      allergy,
-      personal_medicine
-    })
-
-    return medicalinfo
+  async create ({ request, response, auth }) {
+    const trx = await Database.beginTransaction()
+    try {
+      const user = await auth.getUser()
+      const data = request.all()
+      await MedicalInfo.create({...data, user_id: user.id})
+      await trx.commit()
+      return response.status(200).send()
+    } catch (error) {
+      console.log(error);
+      await trx.rollback()
+      return response.status(error.status).send(error)
+    }
   }
 
   async show ({ params, request, response, auth }) {

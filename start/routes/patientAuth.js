@@ -19,7 +19,7 @@ Route.group(() => {
   Route.delete('/users/:id', 'UserController.destroy')
   .middleware('auth')
 
-  Route.post('uploadPhoto/:id', 'ImageController.uploadProfilePhoto')
+  Route.post('uploadPhoto', 'ImageController.uploadProfilePhoto').middleware(['auth'])
   Route.post('uploadSelfie/:id', 'ImageController.uploadSelfie')
 
   Route.post('doubt/create', 'DoubtController.create').middleware(['auth'])
@@ -29,6 +29,8 @@ Route.group(() => {
   Route.get('confirmedAppointments', 'AppointmentController.confirmedAppointments').middleware(['auth'])
   Route.get('pendingAppointments', 'AppointmentController.pendingAppointments').middleware(['auth'])
   Route.put('cancel/:appointment_id', 'AppointmentController.cancelAppointment').middleware(['auth'])
+
+  Route.post('evaluation', 'EvaluationController.store')
 
 })
   .prefix('patientAuth')

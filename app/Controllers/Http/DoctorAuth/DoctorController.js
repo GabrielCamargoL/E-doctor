@@ -4,16 +4,6 @@ const Doctor = use("App/Models/Doctor")
 const Database = use('Database')
 
 class DoctorController {
-  async index({}){
-    try {
-      const doctors = await Doctor.all()
-
-      return doctors
-    }catch (error) {
-      console.log(error);
-    }
-  }
-
   async signIn({ request, response, auth }) {
     try {
       const { email, password } = request.all()

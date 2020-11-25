@@ -1,13 +1,15 @@
 'use strict'
 
-const Doctor = use("App/Models/Doctor")
+const User = use("App/Models/User")
 const Drive = use('Drive');
 
 
 class ImageController {
-  async uploadProfilePhoto({ response, request, params }) {
+  async uploadProfilePhoto({ response, request, auth }) {
     try {
-      const doctor = await Doctor.findOrFail(params.id)
+      const userAuth = await auth.getUser()
+      const user = await User.findOrFail(userAuth.id)
+
       let url
       request.multipart.file('image', {}, async file => {
         const ContentType = file.headers['content-type']
@@ -22,8 +24,8 @@ class ImageController {
         url = Url
       })
       await request.multipart.process()
-      doctor.path_avatar = url;
-      await doctor.save();
+      user.path_avatar = url;
+      await user.save();
 
       if (url) return response.status(200).send(url)
       else return response.status(500).send('Algo inesperado aconteceu!')
