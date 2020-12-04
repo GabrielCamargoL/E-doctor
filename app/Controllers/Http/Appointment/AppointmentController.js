@@ -1,54 +1,56 @@
-'use strict'
+"use strict";
 
-const MedicalAppointment = use("App/Models/MedicalAppointment")
-const Medicine = use("App/Models/Medicine")
-const User = use("App/Models/User")
-const Database = use('Database')
+const MedicalAppointment = use("App/Models/MedicalAppointment");
+const Medicine = use("App/Models/Medicine");
+const User = use("App/Models/User");
+const Database = use("Database");
+const Ws = use("Ws");
 
 class AppointmentController {
   async detailsAppointment({ params }) {
-
-    const appointment = await MedicalAppointment
-      .query()
-      .where('id', params.appointment_id)
-      .with('user', (builder) => {
-        builder.with('medicalInfo')
+    const appointment = await MedicalAppointment.query()
+      .where("id", params.appointment_id)
+      .with("user", (builder) => {
+        builder.with("medicalInfo");
       })
-      .with('doctor')
-      .with('clinic')
-      .fetch()
+      .with("doctor")
+      .with("clinic")
+      .fetch();
 
-    return appointment
+    return appointment;
   }
 
   async confirmedAppointments({ request, response, params }) {
-    const appointments = await MedicalAppointment
-      .query()
-      .where('consultation_schedule', '>', Date.now())
-      .andWhere('doctor_id', params.doctor_id)
-      .andWhere('status', 'Accepted')
-      .with('user')
-      .with('doctor')
-      .fetch()
+    const appointments = await MedicalAppointment.query()
+      .where("consultation_schedule", ">", Date.now())
+      .andWhere("doctor_id", params.doctor_id)
+      .andWhere("status", "Accepted")
+      .with("user")
+      .with("doctor")
+      .fetch();
 
-    return appointments
+    return appointments;
   }
 
   async pendingAppointments({ request, response, params }) {
-    const appointments = await MedicalAppointment
-      .query()
-      .where('consultation_schedule', '>', Date.now())
-      .andWhere('doctor_id', params.doctor_id)
-      .andWhere('status', 'Pending')
-      .with('user')
-      .fetch()
+    const appointments = await MedicalAppointment.query()
+      .where("consultation_schedule", ">", Date.now())
+      .andWhere("doctor_id", params.doctor_id)
+      .andWhere("status", "Pending")
+      .with("user")
+      .fetch();
 
-    return appointments
+    return appointments;
   }
 
   async create({ request }) {
     try {
-      const { clinic_id, doctor_id, user_id, consultation_schedule } = request.all()
+      const {
+        clinic_id,
+        doctor_id,
+        user_id,
+        consultation_schedule,
+      } = request.all();
 
       const appointments = await MedicalAppointment.create({
         clinic_id,
@@ -57,7 +59,7 @@ class AppointmentController {
         consultation_schedule,
       });
 
-      return appointments
+      return appointments;
     } catch (error) {
       console.log(error);
     }
@@ -65,69 +67,77 @@ class AppointmentController {
 
   async acceptAppointment({ request, params }) {
     try {
-      const appointment = MedicalAppointment
-        .query()
-        .where('id', params.appointment_id)
-        .update({ status: 'Accepted' })
+      const appointment = await MedicalAppointment.query()
+        .where("id", params.appointment_id)
+        .first();
 
-      // * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-      //
+      const data = {
+        status: "Accepted",
+      };
+
+      appointment.merge(data);
+      await appointment.save();
+
       //  Notificar o usuário que o médico Aceitou a consulta
-      //
-      // * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+      const userTopic = Ws.getChannel("user:*").topic(
+        `user:${appointment.user_id}`
+      );
+      if (userTopic)
+        userTopic.broadcast("update:appointment", appointment.status);
 
-      return appointment
-
+      return appointment;
     } catch (err) {
-      console.log('Done: ' + err)
+      console.log("Done: " + err);
     }
   }
 
   async rejectAppointment({ request, params }) {
-    console.log(params.appointment_id)
     try {
-      const appointment = MedicalAppointment
-        .query()
-        .where('id', params.appointment_id)
-        .update({ status: 'Rejected' })
+      const appointment = await MedicalAppointment.query()
+        .where("id", params.appointment_id)
+        .first();
 
-      // * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-      //
+      const data = {
+        status: "Rejected",
+      };
+
+      appointment.merge(data);
+      await appointment.save();
+
       //  Notificar o usuário que o médico Rejeitou a consulta
-      //
-      // * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+      const userTopic = Ws.getChannel("user:*").topic(
+        `user:${appointment.user_id}`
+      );
+      if (userTopic)
+        userTopic.broadcast("update:appointment", appointment.status);
 
-      return appointment
-
+      return appointment;
     } catch (err) {
-      console.log('Reject: ' + err)
+      console.log("Reject: " + err);
     }
   }
 
   async cancelAppointment({ request, params }) {
     try {
-      const { reason } = request.all()
+      const { reason } = request.all();
 
-      const appointment = MedicalAppointment
-        .query()
-        .where('id', params.appointment_id)
-        .update({ status: 'Canceled', reason: reason })
+      const appointment = MedicalAppointment.query()
+        .where("id", params.appointment_id)
+        .update({ status: "Canceled", reason: reason });
 
-      return appointment
-
+      return appointment;
     } catch (err) {
-      console.log('Cancel: ' + err)
+      console.log("Cancel: " + err);
     }
   }
 
   async doneAppointment({ request, params }) {
     try {
-      const { medicines } = request.all()
+      const { medicines } = request.all();
 
-      const appointment = await MedicalAppointment
-        .query()
-        .where('id', params.appointment_id)
-        .update({ status: 'Done' })
+      const appointment = await MedicalAppointment.query()
+        .where("id", params.appointment_id)
+        .update({ status: "Done" });
 
       medicines.map((item, index) => {
         Medicine.create({
@@ -135,18 +145,16 @@ class AppointmentController {
           name: item.name,
           period_type: item.period_type,
           hours: item.period,
-          days:item.days
-        })
-        console.log(item)
-      })
+          days: item.days,
+        });
+        console.log(item);
+      });
 
-      return appointment
-
+      return appointment;
     } catch (err) {
-      console.log('Done: ' + err)
+      console.log("Done: " + err);
     }
   }
 }
 
-
-module.exports = AppointmentController
+module.exports = AppointmentController;
