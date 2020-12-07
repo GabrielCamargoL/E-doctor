@@ -14,7 +14,7 @@ class MedicineSchema extends Schema {
         .inTable('medical_appointments')
       table.string('name')
       table
-        .enu('period_type', ['Period', 'Interval', 'Exact_hour'])
+        .enu('period_type', ['In_Event', 'Interval', 'Exact_hour'])
         .defaultTo('Period')
       table.string('hours')
       table.integer('days')
