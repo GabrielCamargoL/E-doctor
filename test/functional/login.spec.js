@@ -11,7 +11,7 @@ test('Login', async ({ client, done, auth}) => {
     .post('/doctorAuth/signIn')
     .send({
       email: 'gabriel.cleite@outlook.com',
-      password: '12345678'
+      password: '1234567'
     })
     .end()
 

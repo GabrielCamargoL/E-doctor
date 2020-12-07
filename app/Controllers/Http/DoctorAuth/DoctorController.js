@@ -15,7 +15,8 @@ class DoctorController {
       return {token, doctor}
 
     } catch (error) {
-      console.log(`Deu erro ${error}`);
+      console.log(`${error}`);
+      return response.status(error.status).send(error)
     }
   }
 
