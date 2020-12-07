@@ -134,8 +134,10 @@ class AppointmentController {
           medical_appointment_id: params.appointment_id,
           name: item.name,
           period_type: item.period_type,
-          hours: item.period,
-          days:item.days
+          hours: item.hours,
+          days:item.days,
+          quantity:item.quantity,
+          unit: item.unit
         })
         console.log(item)
       })

@@ -1,92 +1,26 @@
 'use strict'
 
-/** @typedef {import('@adonisjs/framework/src/Request')} Request */
-/** @typedef {import('@adonisjs/framework/src/Response')} Response */
-/** @typedef {import('@adonisjs/framework/src/View')} View */
-
-/**
- * Resourceful controller for interacting with medicines
- */
+const Medicine = use("App/Models/Medicine")
 class MedicineController {
-  /**
-   * Show a list of all medicines.
-   * GET medicines
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async index ({ request, response, view }) {
+
+  index({ request, response, view }) {
   }
 
-  /**
-   * Render a form to be used for creating a new medicine.
-   * GET medicines/create
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async create ({ request, response, view }) {
+  async create({ request, response, view }) {
   }
 
-  /**
-   * Create/save a new medicine.
-   * POST medicines
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async store ({ request, response }) {
+  async show({ params, request, response, view }) {
+    const medicine = Medicine.query()
+      .where("medical_appointment_id", params.medical_appointment_id)
+      .fetch()
   }
 
-  /**
-   * Display a single medicine.
-   * GET medicines/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async show ({ params, request, response, view }) {
+
+  async update({ params, request, response }) {
   }
 
-  /**
-   * Render a form to update an existing medicine.
-   * GET medicines/:id/edit
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async edit ({ params, request, response, view }) {
-  }
 
-  /**
-   * Update medicine details.
-   * PUT or PATCH medicines/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async update ({ params, request, response }) {
-  }
-
-  /**
-   * Delete a medicine with id.
-   * DELETE medicines/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async destroy ({ params, request, response }) {
+  async destroy({ params, request, response }) {
   }
 }
 
