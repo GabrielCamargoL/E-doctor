@@ -11,8 +11,10 @@ class MedicineController {
 
   async show({ params, request, response, view }) {
     const medicine = Medicine.query()
-      .where("medical_appointment_id", params.medical_appointment_id)
+      .where("medical_appointment_id", params.appointment_id)
       .fetch()
+
+    return medicine
   }
 
 

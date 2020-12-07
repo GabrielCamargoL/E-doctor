@@ -29,6 +29,7 @@ require('./patientAuth')
 require('./recoverPassword')
 require('./medicalAppointment')
 require('./medicalInfo')
+require('./medicines')
 
 
 
