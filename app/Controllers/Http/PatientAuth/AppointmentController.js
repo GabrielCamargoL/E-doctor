@@ -1,54 +1,55 @@
-'use strict'
+"use strict";
 
-const MedicalAppointment = use("App/Models/MedicalAppointment")
-const User = use("App/Models/User")
-const Database = use('Database')
+const MedicalAppointment = use("App/Models/MedicalAppointment");
+const User = use("App/Models/User");
+const Database = use("Database");
 
 class AppointmentController {
   async detailsAppointment({ params }) {
-
-    const appointment = await MedicalAppointment
-      .query()
-      .where('id', params.appointment_id)
-      .with('user', (builder) => {
-        builder.with('medicalInfo')
+    const appointment = await MedicalAppointment.query()
+      .where("id", params.appointment_id)
+      .with("user", (builder) => {
+        builder.with("medicalInfo");
       })
-      .with('doctor')
-      .with('clinic')
-      .fetch()
+      .with("doctor")
+      .with("clinic")
+      .fetch();
 
-    return appointment
+    return appointment;
   }
 
   async confirmedAppointments({ request, response, auth }) {
-    const user = await auth.getUser()
-    const appointments = await MedicalAppointment
-      .query()
-      .where('consultation_schedule', '>', Date.now())
-      .andWhere('user_id', user.id)
-      .andWhere('status', 'Accepted')
-      .with('doctor')
-      .fetch()
+    const user = await auth.getUser();
+    const appointments = await MedicalAppointment.query()
+      .where("consultation_schedule", ">", Date.now())
+      .andWhere("user_id", user.id)
+      .whereNot("status", "Pending")
+      .with("doctor")
+      .fetch();
 
-    return appointments
+    return appointments;
   }
 
   async pendingAppointments({ request, response, auth }) {
-    const user = await auth.getUser()
-    const appointments = await MedicalAppointment
-      .query()
-      .where('consultation_schedule', '>', Date.now())
-      .andWhere('user_id', user.id)
-      .andWhere('status', 'Pending')
-      .with('doctor')
-      .fetch()
+    const user = await auth.getUser();
+    const appointments = await MedicalAppointment.query()
+      .where("consultation_schedule", ">", Date.now())
+      .andWhere("user_id", user.id)
+      .andWhere("status", "Pending")
+      .with("doctor")
+      .fetch();
 
-    return appointments
+    return appointments;
   }
 
   async create({ request }) {
     try {
-      const { clinic_id, doctor_id, user_id, consultation_schedule } = request.all()
+      const {
+        clinic_id,
+        doctor_id,
+        user_id,
+        consultation_schedule,
+      } = request.all();
 
       const appointments = await MedicalAppointment.create({
         clinic_id,
@@ -57,7 +58,7 @@ class AppointmentController {
         consultation_schedule,
       });
 
-      return appointments
+      return appointments;
     } catch (error) {
       console.log(error);
     }
@@ -65,12 +66,11 @@ class AppointmentController {
 
   async cancelAppointment({ request, params }) {
     try {
-      const { reason } = request.all()
+      const { reason } = request.all();
 
-      const appointment = MedicalAppointment
-        .query()
-        .where('id', params.appointment_id)
-        .update({ status: 'Canceled', reason: reason })
+      const appointment = MedicalAppointment.query()
+        .where("id", params.appointment_id)
+        .update({ status: "Canceled", reason: reason });
 
       // * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
       //
@@ -78,19 +78,17 @@ class AppointmentController {
       //
       // * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-      return appointment
-
+      return appointment;
     } catch (err) {
-      console.log('Cancel: ' + err)
+      console.log("Cancel: " + err);
     }
   }
 
   async doneAppointment({ request, params }) {
     try {
-      const appointment = MedicalAppointment
-        .query()
-        .where('id', params.appointment_id)
-        .update({ status: 'Done' })
+      const appointment = MedicalAppointment.query()
+        .where("id", params.appointment_id)
+        .update({ status: "Done" });
 
       // * * * * * * * * * * * * * * * * * * * * * * * *
       //
@@ -100,13 +98,11 @@ class AppointmentController {
       //
       // * * * * * * * * * * * * * * * * * * * * * * * *
 
-      return appointment
-
-    } catch(err) {
-      console.log('Done: ' + err)
+      return appointment;
+    } catch (err) {
+      console.log("Done: " + err);
     }
   }
 }
 
-
-module.exports = AppointmentController
+module.exports = AppointmentController;
