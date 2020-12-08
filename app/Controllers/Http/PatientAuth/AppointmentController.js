@@ -1,5 +1,6 @@
 "use strict";
 
+var moment = require("moment");
 const MedicalAppointment = use("App/Models/MedicalAppointment");
 const User = use("App/Models/User");
 const Database = use("Database");
@@ -81,26 +82,6 @@ class AppointmentController {
       return appointment;
     } catch (err) {
       console.log("Cancel: " + err);
-    }
-  }
-
-  async doneAppointment({ request, params }) {
-    try {
-      const appointment = MedicalAppointment.query()
-        .where("id", params.appointment_id)
-        .update({ status: "Done" });
-
-      // * * * * * * * * * * * * * * * * * * * * * * * *
-      //
-      //  Enviar arquivo de exame PDF para o S3
-      //
-      //  Preparar a string de receita Médica
-      //
-      // * * * * * * * * * * * * * * * * * * * * * * * *
-
-      return appointment;
-    } catch (err) {
-      console.log("Done: " + err);
     }
   }
 }
