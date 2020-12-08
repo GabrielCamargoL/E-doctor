@@ -24,3 +24,5 @@ yarn-error.log*
 
 tmp/
 .env
+
+./e-doctor-app-patient-firebase-adminsdk-awf9y-3e8ea0d228.json
