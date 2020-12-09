@@ -1,10 +1,35 @@
 "use strict";
 
+var admin = require("firebase-admin");
 const User = use("App/Models/User");
 const Database = use("Database");
 const Helpers = use("Helpers");
 const Hash = use("Hash");
 const Drive = use("Drive");
+
+const sendOneNotification = async (fmToken) => {
+  admin.initializeApp({
+    credential: admin.credential.applicationDefault(),
+  });
+
+  var message = {
+    notification: {
+      title: "Portugal vs. Denmark",
+      body: "great match!",
+    },
+  };
+
+  admin
+    .messaging()
+    .sendToDevice(fmToken, message)
+    .then((response) => {
+      // Response is a message ID string.
+      console.log("Successfully sent message:", response);
+    })
+    .catch((error) => {
+      console.log("Error sending message:", error);
+    });
+};
 
 class UserController {
   // POST --------------------------------------------------------
@@ -149,7 +174,37 @@ class UserController {
     return "usuário deletado com sucesso";
   }
 
-  async delete({ request }) {}
+  async updateFcmToken({ request, auth }) {
+    const userAuth = await auth.getUser();
+    const data = request.only(["fcmToken"]);
+    console.log(data);
+
+    userAuth.merge(data);
+
+    await userAuth.save();
+
+    return userAuth;
+  }
+
+  async updateFcmToken({ request, auth }) {
+    const userAuth = await auth.getUser();
+    const data = request.only(["fcmToken"]);
+    console.log(data);
+
+    userAuth.merge(data);
+
+    await userAuth.save();
+
+    return userAuth;
+  }
+
+  async sendN() {
+    try {
+      await sendOneNotification();
+    } catch (error) {
+      console.log(error);
+    }
+  }
 }
 
 module.exports = UserController;
