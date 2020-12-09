@@ -8,15 +8,41 @@ const Doctor = use("App/Models/Doctor");
 const Database = use("Database");
 const Ws = use("Ws");
 
-const sendOneNotification = async (fcmToken, doctor, detailsMessage) => {
+const sendNotificationPatient = async (fcmToken, doctor, detailsMessage) => {
+  var serviceAccountPatient = require("../../../../e-doctor-app-patient-firebase-adminsdk-awf9y-3e8ea0d228.json");
   admin.initializeApp({
-    credential: admin.credential.applicationDefault(),
+    credential: admin.credential.cert(serviceAccountPatient),
   });
 
   var message = {
     notification: {
       title: `Consulta com ${doctor.specialty} `,
       body: `${doctor.username} ${doctor.surname} ${detailsMessage}`,
+    },
+  };
+
+  admin
+    .messaging()
+    .sendToDevice(fcmToken, message)
+    .then((response) => {
+      // Response is a message ID string.
+      console.log("Successfully sent message:", response);
+    })
+    .catch((error) => {
+      console.log("Error sending message:", error);
+    });
+};
+
+const sendNotificationDoctor = async (fcmToken, detailsMessage) => {
+  var serviceAccountPatient = require("../../../../edoctormedico-firebase-adminsdk-4i1ft-86bb197472.json");
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccountPatient),
+  });
+
+  var message = {
+    notification: {
+      title: `Agenda`,
+      body: `${detailsMessage}`,
     },
   };
 
@@ -85,6 +111,13 @@ class AppointmentController {
         consultation_schedule,
       });
 
+      const doctor = await Doctor.findOrFail(doctor_id);
+
+      sendNotificationDoctor(
+        doctor.fcmToken,
+        "Um paciente criou uma nova solicitação de consulta"
+      );
+
       return appointments;
     } catch (error) {
       console.log(error);
@@ -107,7 +140,7 @@ class AppointmentController {
       const user = await User.findOrFail(appointment.user_id);
       const doctor = await Doctor.findOrFail(appointment.doctor_id);
 
-      sendOneNotification(user.fcmToken, doctor, "aceitou sua solicitação.");
+      sendNotificationPatient(user.fcmToken, doctor, "confirmada");
 
       return appointment;
     } catch (err) {
@@ -132,7 +165,7 @@ class AppointmentController {
       const user = await User.findOrFail(appointment.user_id);
       const doctor = await Doctor.findOrFail(appointment.doctor_id);
 
-      sendOneNotification(user.fcmToken, doctor, "recusou sua solicitação.");
+      sendNotificationPatient(user.fcmToken, doctor, "recusada");
 
       return appointment;
     } catch (err) {
@@ -147,6 +180,11 @@ class AppointmentController {
       const appointment = MedicalAppointment.query()
         .where("id", params.appointment_id)
         .update({ status: "Canceled", reason: reason });
+
+      const user = await User.findOrFail(appointment.user_id);
+      const doctor = await Doctor.findOrFail(appointment.doctor_id);
+
+      sendNotificationPatient(user.fcmToken, doctor, "desmarcada.");
 
       return appointment;
     } catch (err) {
@@ -177,7 +215,7 @@ class AppointmentController {
       const user = await User.findOrFail(appointment.user_id);
       const doctor = await Doctor.findOrFail(appointment.doctor_id);
 
-      sendOneNotification(user.fcmToken, doctor, "Finalizou sua consulta");
+      sendNotificationPatient(user.fcmToken, doctor, "Finalizou sua consulta");
 
       return appointment;
     } catch (err) {
