@@ -2,8 +2,34 @@
 
 var moment = require("moment");
 const MedicalAppointment = use("App/Models/MedicalAppointment");
+const Doctor = use("App/Models/Doctor");
 const User = use("App/Models/User");
 const Database = use("Database");
+
+const sendNotificationDoctor = async (fcmToken, detailsMessage) => {
+  var serviceAccountPatient = require("../../../../edoctormedico-firebase-adminsdk-4i1ft-86bb197472.json");
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccountPatient),
+  });
+
+  var message = {
+    notification: {
+      title: `Agenda`,
+      body: `${detailsMessage}`,
+    },
+  };
+
+  admin
+    .messaging()
+    .sendToDevice(fcmToken, message)
+    .then((response) => {
+      // Response is a message ID string.
+      console.log("Successfully sent message:", response);
+    })
+    .catch((error) => {
+      console.log("Error sending message:", error);
+    });
+};
 
 class AppointmentController {
   async detailsAppointment({ params }) {
@@ -43,28 +69,6 @@ class AppointmentController {
     return appointments;
   }
 
-  async create({ request }) {
-    try {
-      const {
-        clinic_id,
-        doctor_id,
-        user_id,
-        consultation_schedule,
-      } = request.all();
-
-      const appointments = await MedicalAppointment.create({
-        clinic_id,
-        doctor_id,
-        user_id,
-        consultation_schedule,
-      });
-
-      return appointments;
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
   async cancelAppointment({ request, params }) {
     try {
       const { reason } = request.all();
@@ -73,11 +77,12 @@ class AppointmentController {
         .where("id", params.appointment_id)
         .update({ status: "Canceled", reason: reason });
 
-      // * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-      //
-      //  Notificar o usuário que o médico cancelou a consulta
-      //
-      // * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+      const doctor = await Doctor.findOrFail(appointment.doctor_id);
+
+      sendNotificationDoctor(
+        doctor.fcmToken,
+        "Um paciente desmarcou uma consulta"
+      );
 
       return appointment;
     } catch (err) {
