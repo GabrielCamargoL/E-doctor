@@ -13,8 +13,11 @@ Route.group(() => {
 
   Route.put('update/:id', 'DoctorController.update')
   Route.put('update/available_hours/:id', 'DoctorController.updateAvailableHours')
+  Route.put('fcmToken/:id', 'DoctorController.updateFcmToken').middleware(["auth"]);
 
   Route.delete('delete/:id', 'DoctorController.destroy')
 })
   .prefix('doctorAuth')
   .namespace('DoctorAuth')
+
+  
