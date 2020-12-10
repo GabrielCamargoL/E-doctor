@@ -6,31 +6,6 @@ const Doctor = use("App/Models/Doctor");
 const User = use("App/Models/User");
 const Database = use("Database");
 
-const sendNotificationDoctor = async (fcmToken, detailsMessage) => {
-  var serviceAccountPatient = require("../../../../edoctormedico-firebase-adminsdk-4i1ft-86bb197472.json");
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccountPatient),
-  });
-
-  var message = {
-    notification: {
-      title: `Agenda`,
-      body: `${detailsMessage}`,
-    },
-  };
-
-  admin
-    .messaging()
-    .sendToDevice(fcmToken, message)
-    .then((response) => {
-      // Response is a message ID string.
-      console.log("Successfully sent message:", response);
-    })
-    .catch((error) => {
-      console.log("Error sending message:", error);
-    });
-};
-
 class AppointmentController {
   async detailsAppointment({ params }) {
     const appointment = await MedicalAppointment.query()
@@ -78,11 +53,6 @@ class AppointmentController {
         .update({ status: "Canceled", reason: reason });
 
       const doctor = await Doctor.findOrFail(appointment.doctor_id);
-
-      sendNotificationDoctor(
-        doctor.fcmToken,
-        "Um paciente desmarcou uma consulta"
-      );
 
       return appointment;
     } catch (err) {

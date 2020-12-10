@@ -3,30 +3,6 @@
 const Doctor = use("App/Models/Doctor")
 const Database = use('Database')
 
-const sendOneNotification = async (fmToken) => {
-  admin.initializeApp({
-    credential: admin.credential.applicationDefault(),
-  });
-
-  var message = {
-    notification: {
-      title: "Portugal vs. Denmark",
-      body: "great match!",
-    },
-  };
-
-  admin
-    .messaging()
-    .sendToDevice(fmToken, message)
-    .then((response) => {
-      // Response is a message ID string.
-      console.log("Successfully sent message:", response);
-    })
-    .catch((error) => {
-      console.log("Error sending message:", error);
-    });
-};
-
 class DoctorController {
   async signIn({ request, response, auth }) {
     try {

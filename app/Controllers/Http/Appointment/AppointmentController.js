@@ -33,31 +33,6 @@ const sendNotificationPatient = async (fcmToken, doctor, detailsMessage) => {
     });
 };
 
-const sendNotificationDoctor = async (fcmToken, detailsMessage) => {
-  var serviceAccountPatient = require("../../../../edoctormedico-firebase-adminsdk-4i1ft-86bb197472.json");
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccountPatient),
-  });
-
-  var message = {
-    notification: {
-      title: `Agenda`,
-      body: `${detailsMessage}`,
-    },
-  };
-
-  admin
-    .messaging()
-    .sendToDevice(fcmToken, message)
-    .then((response) => {
-      // Response is a message ID string.
-      console.log("Successfully sent message:", response);
-    })
-    .catch((error) => {
-      console.log("Error sending message:", error);
-    });
-};
-
 class AppointmentController {
   async detailsAppointment({ params }) {
     const appointment = await MedicalAppointment.query()
@@ -112,11 +87,6 @@ class AppointmentController {
       });
 
       const doctor = await Doctor.findOrFail(doctor_id);
-
-      sendNotificationDoctor(
-        doctor.fcmToken,
-        "Um paciente criou uma nova solicitação de consulta"
-      );
 
       return appointments;
     } catch (error) {
