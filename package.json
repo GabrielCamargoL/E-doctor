@@ -17,7 +17,7 @@
   "private": true,
   "dependencies": {
     "@adonisjs/ace": "^5.0.8",
-    "@adonisjs/auth": "^3.0.7",
+    "@adonisjs/auth": "^8.2.3",
     "@adonisjs/bodyparser": "^2.0.5",
     "@adonisjs/cors": "^1.0.7",
     "@adonisjs/drive": "^1.0.4",
@@ -31,7 +31,7 @@
     "@adonisjs/websocket": "^1.0.12",
     "adonis-lucid-when": "^1.0.1",
     "aws-sdk": "^2.770.0",
-    "firebase-admin": "^9.4.1",
+    "firebase-admin": "^11.4.1",
     "moment": "^2.28.0",
     "mysql": "^2.18.1"
   },
